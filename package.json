@@ -1,0 +1,21 @@
+{
+  "name": "test-csp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress open",
+    "start": "serve public",
+    "dev": "start-test 5000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "5.3.0",
+    "start-server-and-test": "1.11.5"
+  },
+  "dependencies": {
+    "serve": "11.3.2"
+  }
+}
