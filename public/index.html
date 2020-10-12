@@ -1,7 +1,15 @@
 <head>
-  <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'none'; report-uri '/foo/bar'">
+  <!-- <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'none'; report-uri '/foo/bar'"> -->
 </head>
 <body>
   <p>Hi</p>
-  <script>alert(42)</script>
+  <!--
+    Inline script. If an attacker can modify the page
+    that another user sees in such a way that the attacker's script
+    tag runs and shows alert message, then your page is susceptible to
+    script injection attacks
+  -->
+  <script>
+    alert(42)
+  </script>
 </body>
