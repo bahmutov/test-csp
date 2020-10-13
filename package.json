@@ -7,7 +7,7 @@
     "test": "cypress open",
     "start": "node .",
     "start:old": "serve public",
-    "dev": "start-test 5000"
+    "dev": "start-test 3003"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
   "dependencies": {
     "express": "4.17.1",
     "helmet": "4.1.1",
+    "report-to": "1.0.0",
     "serve": "11.3.2"
   }
 }

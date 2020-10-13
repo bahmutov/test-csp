@@ -1,5 +1,4 @@
 {
-  "baseUrl": "http://localhost:5000",
-  "experimentalNetworkStubbing": true,
-  "chromeWebSecurity": false
+  "baseUrl": "http://localhost:3003",
+  "experimentalNetworkStubbing": true
 }
