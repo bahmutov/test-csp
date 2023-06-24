@@ -1,44 +1,37 @@
 /// <reference types="cypress" />
 
 describe('App', () => {
-  it.only('loads', () => {
-    // we are only interested in the root document
-    const url = Cypress.config('baseUrl') + '/'
-    cy.route2('/', (req) => {
-      if (req.url === url) {
-        return req.reply((res) => {
-          const csp = res.headers['content-security-policy']
-          // really simply <HEAD> rewriting
-          // to only insert the CSP meta tag
-          res.body = res.body.replace(
-            '<head> </head>',
-            `
-            <head>
-              <meta http-equiv="Content-Security-Policy" content="${csp} ">
-            </head>
-          `,
-          )
-        })
-      }
-    })
-    cy.visit('/')
+  it('serves Content-Security-Policy header', () => {
+    cy.request('/')
+      .its('headers')
+      .should('have.property', 'content-security-policy')
+      // confirm parts of the CSP directive
+      .should('include', "default-src 'self'")
+      .and('include', 'report-uri /security-attacks')
   })
 
-  it('works', () => {
-    const url = Cypress.config('baseUrl') + '/'
-    cy.route2('/', (req) => {
-      console.log(req)
-      if (req.url === url) {
-        console.log('document')
-        return req.reply((res) => {
-          console.log('server response')
-          console.log(res)
-          // this will be stripped
-          res.headers['content-security-policy'] = 'foo'
-        })
-      }
+  it('can strip CSP and allow injections', () => {
+    cy.intercept('GET', '/', (req) =>
+      req.continue((reply) => {
+        delete reply.headers['content-security-policy']
+      }),
+    )
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'alert').as('alert')
+      },
     })
-    cy.visit('/')
-    cy.contains('p', 'Hi').should('be.visible')
+    cy.get('@alert').should('have.been.calledOnce')
+  })
+
+  it('reports CSP violations', () => {
+    cy.intercept('/security-attacks', {}).as('cspAttacks')
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'alert').as('alert')
+      },
+    })
+    cy.wait('@cspAttacks').its('request.body').should('include', 'blocked')
+    cy.get('@alert').should('not.be.called')
   })
 })
